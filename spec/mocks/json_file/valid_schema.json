@@ -1,0 +1,9 @@
+{
+  "name" : {"type" : "string" , "required" : true },
+  "a" : {"type" : "boolean" , "required" : false},
+  "b" : {"type" : "number" },
+  "d" : {"required" : true},
+  "e" : {
+    "aa" : {"type" : "*" }
+  }
+}

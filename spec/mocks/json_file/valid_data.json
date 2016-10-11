@@ -1,0 +1,9 @@
+{
+  "name": "some name",
+  "a" : true,
+  "b" : 14,
+  "d" : "some d",
+  "e" : {
+    "aa" : "some type a..a"
+  }
+}

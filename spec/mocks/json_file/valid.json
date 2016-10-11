@@ -1,0 +1,6 @@
+{
+  "foo" : "bar",
+  "a"   : true,
+  "b"   : ["cat", "dog", "hamster"],
+  "c"   : null
+}
