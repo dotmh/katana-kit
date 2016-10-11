@@ -4,7 +4,7 @@ module.exports = function (grunt) {
 
     grunt.initConfig({
         pkg: grunt.file.readJSON("package.json"),
-        src: "express_mount",
+        src: "node_ninja",
         spec: "spec",
 
         notify_hooks: {
@@ -58,6 +58,7 @@ module.exports = function (grunt) {
             coverage: {
                 src: "<%= spec %>/**/*_spec.js", // a folder works nicely
                 options: {
+                    reporter: 'mocha-junit-reporter',
                     excludes: ["<%= spec %>/**/*.js"],
                     mask: '*_spec.js'
                 }
