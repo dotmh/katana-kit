@@ -1,0 +1,32 @@
+{
+  "name": "node_ninja",
+  "version": "0.1.0",
+  "description": "Common libraries to do common things quickly",
+  "main": "node_ninja/node_ninja.js",
+  "scripts": {
+    "test": "grunt test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@bitbucket.org/Dotmh/node_ninja.git"
+  },
+  "keywords": [
+    "Node",
+    "Common",
+    "Libraries"
+  ],
+  "author": "Martin Haynes <oss@dotmh.com>",
+  "license": "MIT",
+  "homepage": "https://bitbucket.org/Dotmh/node_ninja#readme",
+  "devDependencies": {
+    "chai": "^3.5.0",
+    "grunt": "^1.0.1",
+    "grunt-contrib-jshint": "^1.0.0",
+    "grunt-contrib-watch": "^1.0.0",
+    "grunt-mocha-istanbul": "^5.0.2",
+    "grunt-mocha-test": "^0.13.2",
+    "grunt-notify": "^0.4.5",
+    "istanbul": "^0.4.5",
+    "mocha": "^3.1.2"
+  }
+}
