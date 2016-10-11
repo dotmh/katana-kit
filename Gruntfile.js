@@ -66,11 +66,9 @@ module.exports = function (grunt) {
                 src: "<%= spec %>/**/*_spec.js", // a folder works nicely
                 options: {
                     reporter: 'mocha-junit-reporter',
-                    reporterOptions: {
-                        mochaFile: process.env.CIRCLE_TEST_REPORTS+'/junit/test-results.xml'
-                    },
                     excludes: ["<%= spec %>/**/*.js"],
-                    mask: '*_spec.js'
+                    mask: '*_spec.js',
+                    mochaOptions: ['--reporter-options', 'mochaFile='+process.env.CIRCLE_TEST_REPORTS+'/junit/test-results.xml']
                 }
             }
         },
