@@ -26,7 +26,7 @@
      * A basic collection object
      *
      * @class Collection
-     * @module Common
+     * @module node_ninja
      * @extends Eventify
      *
      * @author Martin Haynes <oss@dotmh.com>
