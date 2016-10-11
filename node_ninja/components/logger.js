@@ -40,7 +40,7 @@
 
     const DEFAULT_LEVEL = "info";
     const DEFAULT_ENV = "dev";
-    const APP = chalk.red.bold("Titan");
+    const APP = chalk.red.bold("NodeNinja");
 
     class Logger {
         /**

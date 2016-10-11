@@ -58,7 +58,17 @@ module.exports = function (grunt) {
             coverage: {
                 src: "<%= spec %>/**/*_spec.js", // a folder works nicely
                 options: {
+                    excludes: ["<%= spec %>/**/*.js"],
+                    mask: '*_spec.js'
+                }
+            },
+            ci: {
+                src: "<%= spec %>/**/*_spec.js", // a folder works nicely
+                options: {
                     reporter: 'mocha-junit-reporter',
+                    reporterOptions: {
+                        mochaFile: process.env.CIRCLE_TEST_REPORTS+'/junit/test-results.xml'
+                    },
                     excludes: ["<%= spec %>/**/*.js"],
                     mask: '*_spec.js'
                 }
@@ -95,8 +105,8 @@ module.exports = function (grunt) {
 
     grunt.task.run('notify_hooks');
 
-    grunt.registerTask('validate' , ['jshint:all', 'mocha_istanbul']);
-    grunt.registerTask('ci', ['validate', 'coveralls']);
+    grunt.registerTask('validate' , ['jshint:all', 'mocha_istanbul:coverage']);
+    grunt.registerTask('ci', ['jshint:all', 'mocha_istanbul:ci', 'coveralls']);
     grunt.registerTask('test' , ['validate']);
     grunt.registerTask('build' , ['validate' , 'notify:build']);
     grunt.registerTask('autobuild' , ['default' , 'build']);
