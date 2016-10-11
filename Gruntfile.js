@@ -64,6 +64,12 @@ module.exports = function (grunt) {
             }
         },
 
+        coveralls: {
+            ci: {
+                src: 'coverage/lcov.info'
+            }
+        },
+
         watch: {
             jsFiles: {
                 files: ['<%= src %>/**/*.js','<%= spec %>/**/*.js'],
@@ -84,10 +90,12 @@ module.exports = function (grunt) {
     grunt.loadNpmTasks('grunt-contrib-jshint');
     grunt.loadNpmTasks('grunt-mocha-test');
     grunt.loadNpmTasks('grunt-mocha-istanbul');
+    grunt.loadNpmTasks('grunt-coveralls');
 
     grunt.task.run('notify_hooks');
 
     grunt.registerTask('validate' , ['jshint:all', 'mocha_istanbul']);
+    grunt.registerTask('ci', ['validate', 'coveralls']);
     grunt.registerTask('test' , ['validate']);
     grunt.registerTask('build' , ['validate' , 'notify:build']);
     grunt.registerTask('autobuild' , ['default' , 'build']);
