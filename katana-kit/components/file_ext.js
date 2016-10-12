@@ -23,7 +23,7 @@
      * Functions that extend nodes build in FS module
      *
      * @class FileExt
-     * @module node_ninja
+     * @module katana-kit
      *
      * @author Martin Haynes <oss@dotmh.com>
      */

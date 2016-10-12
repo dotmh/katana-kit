@@ -33,7 +33,7 @@
      * Turns any class into an Event Emitter , Handler
      *
      * @class Eventify
-     * @module node_ninja
+     * @module katana-kit
      *
      * @author Martin Haynes <oss@dotmh.com>
      */

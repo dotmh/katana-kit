@@ -31,7 +31,7 @@
      * Loads JSON files and turns them into a collection
      *
      * @class JsonFile
-     * @module Common
+     * @module katana-kit
      *
      * @param filename = Null {String|Null} The JSON file to open
      * @param schema = Null {String|Null} The JSON schema file to use for validation

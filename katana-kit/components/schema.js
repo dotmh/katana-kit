@@ -30,7 +30,7 @@
      * Validates objects against a JSON Schema
      *
      * @class Schema
-     * @module node_ninja
+     * @module katana-kit
      *
      * @author Martin Haynes <oss@dotmh.com>
      */
