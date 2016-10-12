@@ -68,7 +68,7 @@ module.exports = function (grunt) {
                     reporter: 'mocha-junit-reporter',
                     excludes: ["<%= spec %>/**/*.js"],
                     mask: '*_spec.js',
-                    mochaOptions: ['--reporter-options', 'mochaFile='+process.env.CIRCLE_TEST_REPORTS+'/junit/test-results.xml']
+                    mochaOptions: ['--reporter-options', 'mochaFile='+(process.env.CIRCLE_TEST_REPORTS || 'ci')+'/junit/test-results.xml']
                 }
             }
         },

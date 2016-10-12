@@ -10,6 +10,6 @@
         JsonFile: require(FOLDER+'/json_file'),
         Logger: require(FOLDER+'/logger'),
         Schema: require(FOLDER+'/schema')
-    }
+    };
 
 })();
