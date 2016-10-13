@@ -56,7 +56,7 @@
          * @author Martin Haynes <oss@dotmh.com>
          */
         static NODE_NINJA() {
-            return path.join(Helpers.ROOT(), "node_ninja");
+            return path.join(Helpers.ROOT(), "katana-kit");
         }
 
         /**
