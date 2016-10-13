@@ -1,3 +1,5 @@
 test:
   override:
     - grunt ci
+  post:
+    - bash <(curl -s https://codecov.io/bash)
