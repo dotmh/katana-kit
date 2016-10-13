@@ -1,6 +1,6 @@
 {
   "name": "katana-kit",
-  "version": "0.4.0",
+  "version": "0.4.1",
   "description": "Common libraries to do common things quickly",
   "main": "katana-kit/katana-kit.js",
   "scripts": {
@@ -17,7 +17,7 @@
   ],
   "author": "Martin Haynes <oss@dotmh.com>",
   "license": "MIT",
-  "homepage": "https://bitbucket.org/Dotmh/node_ninja#readme",
+  "homepage": "https://bitbucket.org/Dotmh/katana-kit#readme",
   "devDependencies": {
     "chai": "^3.5.0",
     "grunt": "^1.0.1",
