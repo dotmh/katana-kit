@@ -82,6 +82,8 @@
     // collection.on("set.samurai" , (value) => console.log(value));
     // collection.samurai = "Japanese Warriors"; // $: Japanese warriors
     // ```
+    //
+    // ----
 
     class Collection extends Eventify {
         constructor(data) {
@@ -104,6 +106,7 @@
         // ```
         // collection.isCollection // => true
         // ```
+        // ----
         isCollection() {
             return true;
         }
@@ -116,7 +119,7 @@
         // ```
         // collection.toObject(); // => {foo: bar}
         // ```
-
+        // ----
         toObject() {
             return this.data();
         }
@@ -129,6 +132,7 @@
         // ```
         // collection.toString() // => '{"foo" : "bar"}'
         // ```
+        // ----
         toString() {
             return JSON.stringify(this.data());
         }
@@ -145,6 +149,7 @@
         // collection.data({foo: 'bar'}); // => {foo: bar}
         // collection.data(); // => {foo.bar}
         // ```
+        // ----
         data(data) {
             data = data || false;
             if (data && typeof(data) === "object") {
@@ -165,6 +170,7 @@
         // ```
         // <CLASS>.has("foo");
         // ```
+        // ----
         has(key) {
             if (!(key || false)) {
                 throw new Error("Key is required");
@@ -191,6 +197,8 @@
         // <CLASS>.foo; // => "bar"
         // ```
         // as you normally would.
+        //
+        // ----
         field(name) {
             if (!(name || false)) {
                 throw new Error("Fieldname is required");
@@ -209,6 +217,7 @@
         // ```
         // <CLASS>.fields();
         // ```
+        // ----
         fields() {
             return this._fields;
         }
@@ -222,6 +231,7 @@
         // ```
         // <CLASS>.length
         // ```
+        // ----
         length() {
             return this._length;
         }
@@ -237,6 +247,7 @@
         // collection.find("foo"); // => "bar"
         // collection.find("a.b.c"); // => false
         // ```
+        // ----
         find(query) {
             if ( !(query ||  false)) {
                 return null;
@@ -258,6 +269,7 @@
         // ```
         // collection.extend(new Collection({"ninja" : "sword"}); // => {foo: "bar", ninja: "Sword"}
         // ```
+        // ----
         extend(collection) {
             if ( typeof(collection.isCollection) === "function" && collection.isCollection() ) {
                 let fData = collection.data();

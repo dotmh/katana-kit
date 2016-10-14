@@ -96,7 +96,7 @@
         // ---
         // Similar to `on` and `once` bind events to a queue, this time the all queue.
         // The all queue however can only have certain events, and is used to monitor the event class. This is mostly
-        // used by [Eventify.bond](#bond).
+        // used by [Eventify.bond](#section-23).
         //
         // Unlike the other event handlers only 4 Events can be bond here.
         // - `EVENT_ALL_ON` : called every time the on method is called.
@@ -195,11 +195,11 @@
         // describe
         // --------
         // Describes the event queues already present allowing class to attach to them
-        // this is mainly meant to be used by the bond
+        // this is mainly meant to be used by the [Eventify.bond](#section-23)
         //
         // ### Usage
         // ```
-        // eventify.describe(); 
+        // eventify.describe();
         // /* =>
         // {
         //  queue: {"eventname", [handler, ...]},
