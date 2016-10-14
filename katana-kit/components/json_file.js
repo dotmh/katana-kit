@@ -30,8 +30,6 @@
     //      "path/to/schema.json"
     // );
     // ```
-    //
-    // ----
     class JsonFile extends Collection {
 
         constructor(filename, schemaFile) {
@@ -57,7 +55,6 @@
         //  "new/path/to/file"
         // ); //=> "new/path/to/file"
         // ```
-        // ----
         filename (filename) {
             if ( filename||false ) {
                 this._filename = filename;
@@ -78,7 +75,6 @@
         // // ... Do Something
         // });
         // ```
-        // ----
         load() {
 			Logger.info(`json_file / load - ${this.filename()}`);
             this.exists_or_die();
@@ -107,7 +103,6 @@
         // ```
         // let a = jsonfile.loadSync();
         // ```
-        // ----
         loadSync() {
 			Logger.info(`json_file / loadSync - ${this.filename()}`);			
             this.exists_or_die();
@@ -134,7 +129,6 @@
         // ```
         // jsonfile.valid() // => true or false
         // ```
-        // ----
         valid() {
             this._hasSchema();
             if ( !this._loaded ) {
@@ -153,7 +147,6 @@
         // ```
         // jsonfile.invalid() // => true or false
         // ```
-        // ----
         invalid() {
             return !this.valid(this.data());
         }
@@ -175,7 +168,6 @@
         // ```
         // jsonfile.exists() // => true or false
         // ```
-        // ---
         exists() {
             return FileExt.file_exists(this.filename());
         }

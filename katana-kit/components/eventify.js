@@ -38,7 +38,6 @@
     //      }
     // }
     // ```
-    // ----
     class Eventify {
         constructor() {
             this._queue = {};
@@ -55,7 +54,6 @@
         // ```
         // collection.isCollection // => true
         // ```
-        // ----
         isEventify () {
             return true;
         }
@@ -70,7 +68,6 @@
         //      // Do Something
         // });
         // ```
-        // ----
         on (event , handler) {
             this.bind(event, handler, this._queue);
             this.trigger(EVENT_ALL_ON, [event, handler, this._queue]);
@@ -86,7 +83,6 @@
         //      // Do Something
         // });
         // ```
-        // ----
         once (event , handler) {
             this.bind(event, handler, this._once);
             this.trigger(EVENT_ALL_ONCE, [event, handler, this._once]);
@@ -110,7 +106,6 @@
         //      // Do Something
         // });
         // ```
-        // ----
         all (event , handler) {
 
             if ( !(event||false) ) {
@@ -134,7 +129,6 @@
         // ```
         // eventify.off('event.name');
         // ```
-        // ----
         off (event) {
             this.unbind(event, this._once);
             this.unbind(event, this._queue);
@@ -152,7 +146,6 @@
         // ```
         // eventify.trigger("event.name" , [param_1 ... param_n]);
         // ```
-        // ----
         trigger (event , params) {
 
             params = params || [];
@@ -173,7 +166,6 @@
         // //...
         // a.bond(b);
         // ```
-        // ----
         bond (child) {
             if ( !(typeof(child.isEventify) === "function" && child.isEventify()) ) {
                 throw new Error("A Bond can only be established between two Eventified objects");
@@ -208,7 +200,6 @@
         // };
         // */
         // ```
-        // ----
         describe () {
             let _this = this;
             return {

@@ -8,8 +8,6 @@
     // Functionality to extend the inbuilt Node functions
     //
     // @todo : Fix the naming and remove the class wrapper
-    //
-    // ----
     class FileExt {
 
         // file_exist
@@ -23,7 +21,6 @@
         // ```
         // FileExt.file_exist("foo");  //=> {isDirectory: function , isFile: function}
         // ```
-        // ----
         static file_exist(filename) {
 
             filename = filename || false;
@@ -50,7 +47,6 @@
         // ```
         // FileExt.file_exists("foo"); //=> false
         // ```
-        // ----
         static file_exists(filename) {
             let res = FileExt.file_exist(filename);
             return (res.isDirectory() || res.isFile());
