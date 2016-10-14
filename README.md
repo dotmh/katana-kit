@@ -67,7 +67,7 @@ class MyClass extends Eventify
 ### FileExt
 __! NODE ONLY__
 
-A collection of functions that extend build in node `fs`
+A collection of functions that extend the built in node `fs`
 
 #### Usage
 ```
