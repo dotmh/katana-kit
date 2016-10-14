@@ -7,15 +7,30 @@ KATANA KIT
 [![bitHound Dependencies](https://www.bithound.io/github/dotmh/katana-kit/badges/dependencies.svg)](https://www.bithound.io/github/dotmh/katana-kit/master/dependencies/npm)
 [![Dependency Status](https://gemnasium.com/badges/github.com/dotmh/katana-kit.svg)](https://gemnasium.com/github.com/dotmh/katana-kit)
 
-Katana Kit is a set of standard libraries that can be used to build exciting Node apps. The eventually plan is for the 
-libraries in Katana Kit to be split down in to smaller single function modules. This module will then therefore become
-a wrapper/helper to include all of Katana Kit in to your application. 
+A Kit for building Javascript apps, using Common JS. Aimed at Node though some classes will work in both node
+and the browser.
 
-Installing
-----------
+Installation
+------------
+Recommend that you use [Yarn](https://yarnpkg.com/) rather than NPM.
 
-To install Katana Kit you will need NPM. 
+### Yarn
+```
+yarn add katana-kit
+```
 
+### NPM
 ```
 npm install --save katana-kit
 ```
+
+Usage
+-----
+You can include the entire library in your code with
+```
+const katana = require('katana-kit')
+```
+or see the [documentation]() to require the individual components.
+
+API Documentation
+-----------------
