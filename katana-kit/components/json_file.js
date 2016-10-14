@@ -1,19 +1,3 @@
-/***
- * Copyright (c) 2016 DotMH
- *
- * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated
- * documentation files (the "Software"), to deal in the Software without restriction, including without limitation the
- * rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit
- * persons to whom the Software is furnished to do so, subject to the following conditions:
- *
- * The above copyright notice and this permission notice shall be included in all copies or substantial portions of the
- * Software.
- *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE
- * WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR
- * COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
- * OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
- */
 (function(){
     "use strict";
 
@@ -27,17 +11,27 @@
 
     const ENCODING = "utf8";
 
-    /**
-     * Loads JSON files and turns them into a collection
-     *
-     * @class JsonFile
-     * @module katana-kit
-     *
-     * @param filename = Null {String|Null} The JSON file to open
-     * @param schema = Null {String|Null} The JSON schema file to use for validation
-     *
-     * @author Martin Haynes
-     */
+    // JsonFile
+    // ========
+    // is a wrapper for JSON files, it allows you to open a JSON file, and validate it against a [schema](schema.html)
+    // the contents is then wrapped in a [collection](collection.html) giving you all the collection functionality like
+    // been able to observe the file contents. You can add handlers for the events used in [schema](schema.html) by
+    // simply binding them to the `JsonFile` class as they are [bonded](eventify.html#section-23) together
+    //
+    // # Usage
+    // -------
+    // ```
+    // let file = new JsonFile("path/to/file");
+    //
+    // // OR
+    //
+    // let file = new JsonFile(
+    //      "path/to/file",
+    //      "path/to/schema.json"
+    // );
+    // ```
+    //
+    // ----
     class JsonFile extends Collection {
 
         constructor(filename, schemaFile) {
@@ -52,14 +46,18 @@
             }
         }
 
-        /**
-         * Gets , or Sets and Gets the JSON Filename
-         *
-         * @param filename = false {String|Boolean} The Json file name
-         * @returns {String|null} The filename
-         *
-         * @author Martin Haynes
-         */
+        // filename
+        // --------
+        // Ether gets or sets then gets the filename of the JSON file that you wish the class to manage.
+        //
+        // ### Usage
+        // ```
+        // jsonfile.filename(); //=> "path/to/file"
+        // jsonfile.filename(
+        //  "new/path/to/file"
+        // ); //=> "new/path/to/file"
+        // ```
+        // ----
         filename (filename) {
             if ( filename||false ) {
                 this._filename = filename;
@@ -68,13 +66,19 @@
             return this._filename;
         }
 
-        /**
-         * Loads a JSON file up Async and populates the collection with the data
-         *
-         * @returns {Promise} The Promise for when the file is loaded.
-         *
-         * @author Martin Haynes
-         */
+        // load
+        // ----
+        // Loads a JSON file and wraps it in a [collection](collection.html). This method follows the standard
+        // node idiology of doing such operations async. It therefore returns a promise that will resolve with the
+        // instance of this Class loaded with the contents of the JSON file.
+        //
+        // ### Usage
+        // ```
+        // jsonfile.load().then((jsonfile) => {
+        // // ... Do Something
+        // });
+        // ```
+        // ----
         load() {
 			Logger.info(`json_file / load - ${this.filename()}`);
             this.exists_or_die();
@@ -93,13 +97,17 @@
 
         }
 
-        /**
-         * Loads a JSON file up Sync and populates the Collection
-         *
-         * @returns {JsonFile} This instance of JsonFile with the data prepopulated
-         *
-         * @author Martin Haynes
-         */
+        // loadSync
+        // --------
+        // Similar to other node js modules, including those built in this is a sync version of [JsonFile.load](#section-9). As doing sync
+        // operations kinda defeats the purpose of using node this is not the default way of loading. Its provided
+        // if you need it. It will load the JsonFile and then return an instance of the class loaded with the data.
+        //
+        // ### Usage
+        // ```
+        // let a = jsonfile.loadSync();
+        // ```
+        // ----
         loadSync() {
 			Logger.info(`json_file / loadSync - ${this.filename()}`);			
             this.exists_or_die();
@@ -116,13 +124,17 @@
             return this;
         }
 
-        /**
-         * Checks that the data from the JSON file matches the schema
-         *
-         * @returns {Boolean} Standard True = valid , False = invalid
-         *
-         * @author Martin Haynes
-         */
+        // valid
+        // -----
+        // Checks the data from the JSON against a [Schema](schema.html).
+        // If the JSON hasn't been loaded yet, then it will load the file using [JsonFile.loadSync](#section-12),
+        // it will return boolean `true` if it is valid and `false` if it is not.
+        //
+        // ### Usage
+        // ```
+        // jsonfile.valid() // => true or false
+        // ```
+        // ----
         valid() {
             this._hasSchema();
             if ( !this._loaded ) {
@@ -131,13 +143,17 @@
             return this._schema.valid(this.data());
         }
 
-        /**
-         * checks that the data
-         *
-         * @returns {boolean} inverse standard True = invalid , False = valid
-         *
-         * @author Martin Haynes
-         */
+        // invalid
+        // -------
+        // The convince method which is the opposite of [jsonfile.valid()](#section-15).
+        // It therefore returns boolean [true] if the JSON is not valid against the schema , and false if it is valid
+        // it is the same as doing `!jsonfile.valid()`.
+        //
+        // ### Usage
+        // ```
+        // jsonfile.invalid() // => true or false
+        // ```
+        // ----
         invalid() {
             return !this.valid(this.data());
         }
@@ -149,6 +165,17 @@
          *
          * @author Martin Haynes
          */
+
+        // exists
+        // ------
+        // Allows you to check if the file exists before attempting to load it. will return boolean `true` if the file
+        // exists and `false` if not.
+        //
+        // ### Usage
+        // ```
+        // jsonfile.exists() // => true or false
+        // ```
+        // ---
         exists() {
             return FileExt.file_exists(this.filename());
         }
@@ -194,3 +221,17 @@
     module.exports = JsonFile;
 
 })();
+// Copyright (c) 2016 DotMH
+//
+// Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated
+// documentation files (the "Software"), to deal in the Software without restriction, including without limitation the
+// rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit
+// persons to whom the Software is furnished to do so, subject to the following conditions:
+//
+// The above copyright notice and this permission notice shall be included in all copies or substantial portions of the
+// Software.
+//
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE
+// WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR
+// COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
+// OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
