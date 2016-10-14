@@ -1,6 +1,6 @@
 {
   "name": "katana-kit",
-  "version": "0.4.1",
+  "version": "0.5.1",
   "description": "Common libraries to do common things quickly",
   "main": "katana-kit/katana-kit.js",
   "scripts": {
@@ -8,7 +8,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+ssh://git@bitbucket.org/Dotmh/katana-kit.git"
+    "url": "git+ssh://git@github.com:dotmh/katana-kit.git"
   },
   "keywords": [
     "Node",
@@ -17,7 +17,7 @@
   ],
   "author": "Martin Haynes <oss@dotmh.com>",
   "license": "MIT",
-  "homepage": "https://bitbucket.org/Dotmh/katana-kit#readme",
+  "homepage": "https://github.com/dotmh/katana-kit/blob/master/README.md",
   "devDependencies": {
     "chai": "^3.5.0",
     "grunt": "^1.0.1",
