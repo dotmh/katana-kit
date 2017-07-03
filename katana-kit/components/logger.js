@@ -92,7 +92,7 @@
                 "level" : chalk.bold(level.toUpperCase()),
                 "message" : (typeof(msg) === "object" ? JSON.stringify(msg) : msg)
             });
-            this._messages.push(chalk.stripColor(out));
+            //this._messages.push(chalk.stripColor(out));
             console.log(chalk[this._color(level)](out));
         }
 
