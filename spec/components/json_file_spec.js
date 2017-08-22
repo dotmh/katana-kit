@@ -86,6 +86,19 @@
 
         });
 
+        describe("#_function_or_die()", () => {
+
+            it("should throw an error on a non function", () => {
+
+                let subject = new JsonFile();
+
+                let fn = () => subject._function_or_die("foo", "foo");
+
+                expect(fn).to.throw("foo must be a function!");
+            });
+
+        });
+
         describe("#loadSync()" , () => {
 
             it("should load a valid JSON file and return a populated collection" , () => {
@@ -262,17 +275,86 @@
 
             describe("#serialize", () => {
 
-                it("should use the custom serializer if set");
-                it("should use the generic JSON serializer if no custom is set");
-                it("should throw an error if the custom serializer is set but a deserializer isn't");
+                it("should use the custom serializer if set", () => {
+                    let cust = (d) => JSON.stringify(d);
+                    let custD = (d) => JSON.parse(d);
+                    let subject = new JsonFile();
+                    let mockdata = loadMockJson();
+
+                    subject.registerSerializer(cust);
+                    subject.registerDeserializer(custD);
+                    subject.data(mockdata);
+
+                    expect(subject.serialize()).to.equal(JSON.stringify(mockdata));
+
+                });
+
+                it("should use the generic JSON serializer if no custom is set", () => {
+                    let subject = new JsonFile();
+                    let mockdata = loadMockJson();
+                    subject.data(mockdata);
+
+                    expect(subject.serialize()).to.equal(JSON.stringify(mockdata));
+                });
+
+                it("should throw an error if the custom serializer is set but a deserializer isn't", () => {
+                    let subject = new JsonFile();
+                    let cust = (d) => d;
+
+                    subject.registerSerializer(cust);
+
+                    let fn = () => subject.serialize();
+
+                    expect(fn).to.throw("Can not serialize data missing ether serializer or deserializer");
+                });
 
             });
 
             describe("#deserialize", () => {
 
-                it("should use the custom deserializer if set");
-                it("should use the generic JSON deserializer if no custom is set");
-                it("should throw an error if the custom deserializer is set but a serializer isn't");
+                it("should use the custom deserializer if set", () => {
+                    let cust = (d) => JSON.stringify(d);
+                    let custD = (d) => JSON.parse(d);
+                    let subject = new JsonFile();
+                    let mockdata = loadMockJson();
+
+                    subject.registerSerializer(cust);
+                    subject.registerDeserializer(custD);
+
+                    expect(subject.deserialize(JSON.stringify(mockdata))).to.deep.equal(mockdata);
+                });
+
+                it("should use the generic JSON deserializer if no custom is set", () => {
+                    let subject = new JsonFile();
+                    let mockdata = loadMockJson();
+                    subject.data(mockdata);
+
+                    expect(subject.deserialize(JSON.stringify(mockdata))).to.deep.equal(mockdata);
+                });
+
+                it("should throw an error if the custom deserializer is set but a serializer isn't", () => {
+                    let subject = new JsonFile();
+                    let cust = (d) => d;
+
+                    subject.registerDeserializer(cust);
+
+                    let fn = () => subject.deserialize("");
+
+                    expect(fn).to.throw("Can not serialize data missing ether serializer or deserializer");
+                });
+
+            });
+
+            describe("#toString", () => {
+
+                it("should auto serialize and return the serialised data string", () => {
+                   let subject = new JsonFile();
+                   let mockdata = loadMockJson();
+
+                   subject.data(mockdata);
+
+                   expect(subject.toString()).to.equal(JSON.stringify(mockdata));
+                });
 
             });
 
