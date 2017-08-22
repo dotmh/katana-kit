@@ -79,6 +79,12 @@ module.exports = function (grunt) {
             }
         },
 
+        rm: {
+            testTmp : {
+                dir: '<%= spec %>/.tmp'
+            }
+        },
+
         watch: {
             jsFiles: {
                 files: ['<%= src %>/**/*.js','<%= spec %>/**/*.js'],
@@ -100,10 +106,11 @@ module.exports = function (grunt) {
     grunt.loadNpmTasks('grunt-mocha-test');
     grunt.loadNpmTasks('grunt-mocha-istanbul');
     grunt.loadNpmTasks('grunt-coveralls');
+    grunt.loadNpmTasks('grunt-rm');
 
     grunt.task.run('notify_hooks');
 
-    grunt.registerTask('validate' , ['jshint:all', 'mocha_istanbul:coverage']);
+    grunt.registerTask('validate' , ['jshint:all', 'mocha_istanbul:coverage', 'rm:testTmp']);
     grunt.registerTask('ci', ['jshint:all', 'mocha_istanbul:ci', 'coveralls']);
     grunt.registerTask('test' , ['validate']);
     grunt.registerTask('build' , ['validate' , 'notify:build']);

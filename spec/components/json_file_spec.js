@@ -86,6 +86,19 @@
 
         });
 
+        describe("#_function_or_die()", () => {
+
+            it("should throw an error on a non function", () => {
+
+                let subject = new JsonFile();
+
+                let fn = () => subject._function_or_die("foo", "foo");
+
+                expect(fn).to.throw("foo must be a function!");
+            });
+
+        });
+
         describe("#loadSync()" , () => {
 
             it("should load a valid JSON file and return a populated collection" , () => {
@@ -162,6 +175,187 @@
                     console.log("In load test that is expected to fail");
                     expect(err).to.be.equal(`Can not read ${ invalidPath }, not valid JSON`);
                 });
+            });
+
+        });
+
+        describe("#saveSync()", () => {
+
+            it("should save data to a Valid Json file" , () => {
+                let tmpPath = path.join(Helpers.TMP(), MOCK_VALID_JSON);
+                let mockdata = loadMockJson();
+                let subject = new JsonFile(tmpPath);
+
+                subject.data(mockdata);
+                subject.saveSync();
+
+                let savedFile = Helpers.loadJson(tmpPath);
+
+                expect(savedFile).to.deep.equal(mockdata);
+
+            });
+
+        });
+
+        describe('#save', () => {
+
+            it("should save data to valid JSON File" , (done) => {
+                let tmpPath = path.join(Helpers.TMP(), MOCK_VALID_JSON);
+                let mockdata = loadMockJson();
+                let subject = new JsonFile(tmpPath);
+
+                subject.data(mockdata);
+                subject.save().then(() => {
+                    let savedFile = Helpers.loadJson(tmpPath);
+                    expect(savedFile).to.deep.equal(mockdata);
+                    done();
+                });
+            });
+
+        });
+
+        describe("Serialization", () => {
+
+            describe("#registerSerializer", () => {
+
+                it("should set a custom serializer", () => {
+
+                    let cust = (d) => d;
+
+                    let subject = new JsonFile();
+                    subject.registerSerializer(cust);
+
+                    expect(subject._serializer.serialize.toString()).to.equal(cust.toString());
+
+                });
+            });
+
+            describe("#registerSerializer", () => {
+
+                it("should set a custom deserializer", () => {
+
+                    let cust = (d) => d;
+
+                    let subject = new JsonFile();
+                    subject.registerDeserializer(cust);
+
+                    expect(subject._serializer.deserialize.toString()).to.equal(cust.toString());
+
+                });
+
+            });
+
+            describe("#canSerialize", () => {
+
+                it("should return true with no custom Serializer set" , () => {
+                   let subject = new JsonFile();
+                   expect(subject.canSerialize()).to.be.true;
+                });
+
+                it("should returnn true with both custom Serializers set", () => {
+                   let cust = (d) => d;
+                   let subject = new JsonFile();
+
+                   subject.registerSerializer(cust);
+                   subject.registerDeserializer(cust);
+
+                    expect(subject.canSerialize()).to.be.true;
+                });
+
+                it("Should return false when only one custom Serializer is set", () => {
+                   let cust = (d) => d;
+                   let subject = new JsonFile();
+
+                   subject.registerSerializer(cust);
+
+                   expect(subject.canSerialize()).to.be.false;
+                });
+
+            });
+
+            describe("#serialize", () => {
+
+                it("should use the custom serializer if set", () => {
+                    let cust = (d) => JSON.stringify(d);
+                    let custD = (d) => JSON.parse(d);
+                    let subject = new JsonFile();
+                    let mockdata = loadMockJson();
+
+                    subject.registerSerializer(cust);
+                    subject.registerDeserializer(custD);
+                    subject.data(mockdata);
+
+                    expect(subject.serialize()).to.equal(JSON.stringify(mockdata));
+
+                });
+
+                it("should use the generic JSON serializer if no custom is set", () => {
+                    let subject = new JsonFile();
+                    let mockdata = loadMockJson();
+                    subject.data(mockdata);
+
+                    expect(subject.serialize()).to.equal(JSON.stringify(mockdata));
+                });
+
+                it("should throw an error if the custom serializer is set but a deserializer isn't", () => {
+                    let subject = new JsonFile();
+                    let cust = (d) => d;
+
+                    subject.registerSerializer(cust);
+
+                    let fn = () => subject.serialize();
+
+                    expect(fn).to.throw("Can not serialize data missing ether serializer or deserializer");
+                });
+
+            });
+
+            describe("#deserialize", () => {
+
+                it("should use the custom deserializer if set", () => {
+                    let cust = (d) => JSON.stringify(d);
+                    let custD = (d) => JSON.parse(d);
+                    let subject = new JsonFile();
+                    let mockdata = loadMockJson();
+
+                    subject.registerSerializer(cust);
+                    subject.registerDeserializer(custD);
+
+                    expect(subject.deserialize(JSON.stringify(mockdata))).to.deep.equal(mockdata);
+                });
+
+                it("should use the generic JSON deserializer if no custom is set", () => {
+                    let subject = new JsonFile();
+                    let mockdata = loadMockJson();
+                    subject.data(mockdata);
+
+                    expect(subject.deserialize(JSON.stringify(mockdata))).to.deep.equal(mockdata);
+                });
+
+                it("should throw an error if the custom deserializer is set but a serializer isn't", () => {
+                    let subject = new JsonFile();
+                    let cust = (d) => d;
+
+                    subject.registerDeserializer(cust);
+
+                    let fn = () => subject.deserialize("");
+
+                    expect(fn).to.throw("Can not serialize data missing ether serializer or deserializer");
+                });
+
+            });
+
+            describe("#toString", () => {
+
+                it("should auto serialize and return the serialised data string", () => {
+                   let subject = new JsonFile();
+                   let mockdata = loadMockJson();
+
+                   subject.data(mockdata);
+
+                   expect(subject.toString()).to.equal(JSON.stringify(mockdata));
+                });
+
             });
 
         });

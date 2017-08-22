@@ -19,6 +19,7 @@
 
     let fs = require("fs");
     let readFileWithPromise = require('bluebird').promisify(fs.readFile);
+    let writeFileWithPromise = require('bluebird').promisify(fs.writeFile);
 
     let Logger = require(`./logger`);
     let FileExt = require("./file_ext");
@@ -46,6 +47,10 @@
             this._schemaFile = schemaFile || null;
             this._schema = this._schemaFile !== null ? new Schema(this._schemaFile) : null;
             this._loaded = false;
+            this._serializer = {
+                serialize : null,
+                deserialize: null
+            };
 
             if(this._schema !== null) {
                 this.bond(this._schema);
@@ -80,7 +85,7 @@
             this.exists_or_die();
                 return readFileWithPromise(this.filename(), ENCODING)
                 .then((data) => {
-                    let json = JSON.parse(data);
+                    let json = this.deserialize(data);
                     Logger.info(`json_file / loaded - ${JSON.stringify(json)}`);
                     this.data(json);
                     this._loaded = true;
@@ -106,7 +111,7 @@
             let data = fs.readFileSync(this.filename() , ENCODING);
             let json = null;
             try {
-                json = JSON.parse(data);
+                json = this.deserialize(data);
                 this.data(json);
                 this._loaded = true;
             } catch (error) {
@@ -115,6 +120,68 @@
 
             return this;
         }
+
+        save() {
+            Logger.info(`json_file / save - ${this.filename()}`);
+            return writeFileWithPromise(this.filename(), this.serialize(), ENCODING);
+
+        }
+
+        saveSync() {
+            Logger.info(`json_file / saveSync - ${this.filename()}`);
+            fs.writeFileSync(this.filename(), this.serialize(), ENCODING);
+        }
+
+        registerSerializer(serializer) {
+            this._function_or_die(serializer, "serializer");
+            this._serializer.serialize = serializer;
+        }
+
+        registerDeserializer(deserializer) {
+            this._function_or_die(deserializer, "deserializer");
+            this._serializer.deserialize = deserializer;
+        }
+
+        serialize() {
+            if(this.canSerialize()) {
+                if(this.canCustomSerialize()) {
+                    return this._serializer.serialize(this.data());
+                } else {
+                    return JSON.stringify(this.data());
+                }
+            } else {
+                throw new Error("Can not serialize data missing ether serializer or deserializer");
+            }
+        }
+
+        deserialize(serialized) {
+            if(this.canSerialize()) {
+                if(this.canCustomSerialize()) {
+                    return this._serializer.deserialize(serialized);
+                } else {
+                    return JSON.parse(serialized);
+                }
+            } else {
+                throw new Error("Can not serialize data missing ether serializer or deserializer");
+            }
+        }
+
+        canSerialize() {
+            if(this._serializer.serialize === null && this._serializer.deserialize === null) {
+                return true;
+            }
+
+            return this.canCustomSerialize();
+        }
+
+        canCustomSerialize() {
+            return this._serializer.serialize !== null && this._serializer.deserialize !== null;
+        }
+
+        toString() {
+            return this.serialize();
+        }
+
 
         /**
          * Checks that the data from the JSON file matches the schema
@@ -186,6 +253,12 @@
         _hasSchema() {
             if ( this._schema === null ) {
                 throw new Error('No validation schema has been defined');
+            }
+        }
+
+        _function_or_die(check, param) {
+            if(typeof(check) !== "function") {
+                throw new Error(`${param} must be a function!`);
             }
         }
 
