@@ -166,6 +166,118 @@
 
         });
 
+        describe("#saveSync()", () => {
+
+            it("should save data to a Valid Json file" , () => {
+                let tmpPath = path.join(Helpers.TMP(), MOCK_VALID_JSON);
+                let mockdata = loadMockJson();
+                let subject = new JsonFile(tmpPath);
+
+                subject.data(mockdata);
+                subject.saveSync();
+
+                let savedFile = Helpers.loadJson(tmpPath);
+
+                expect(savedFile).to.deep.equal(mockdata);
+
+            });
+
+        });
+
+        describe('#save', () => {
+
+            it("should save data to valid JSON File" , (done) => {
+                let tmpPath = path.join(Helpers.TMP(), MOCK_VALID_JSON);
+                let mockdata = loadMockJson();
+                let subject = new JsonFile(tmpPath);
+
+                subject.data(mockdata);
+                subject.save().then(() => {
+                    let savedFile = Helpers.loadJson(tmpPath);
+                    expect(savedFile).to.deep.equal(mockdata);
+                    done();
+                });
+            });
+
+        });
+
+        describe("Serialization", () => {
+
+            describe("#registerSerializer", () => {
+
+                it("should set a custom serializer", () => {
+
+                    let cust = (d) => d;
+
+                    let subject = new JsonFile();
+                    subject.registerSerializer(cust);
+
+                    expect(subject._serializer.serialize.toString()).to.equal(cust.toString());
+
+                });
+            });
+
+            describe("#registerSerializer", () => {
+
+                it("should set a custom deserializer", () => {
+
+                    let cust = (d) => d;
+
+                    let subject = new JsonFile();
+                    subject.registerDeserializer(cust);
+
+                    expect(subject._serializer.deserialize.toString()).to.equal(cust.toString());
+
+                });
+
+            });
+
+            describe("#canSerialize", () => {
+
+                it("should return true with no custom Serializer set" , () => {
+                   let subject = new JsonFile();
+                   expect(subject.canSerialize()).to.be.true;
+                });
+
+                it("should returnn true with both custom Serializers set", () => {
+                   let cust = (d) => d;
+                   let subject = new JsonFile();
+
+                   subject.registerSerializer(cust);
+                   subject.registerDeserializer(cust);
+
+                    expect(subject.canSerialize()).to.be.true;
+                });
+
+                it("Should return false when only one custom Serializer is set", () => {
+                   let cust = (d) => d;
+                   let subject = new JsonFile();
+
+                   subject.registerSerializer(cust);
+
+                   expect(subject.canSerialize()).to.be.false;
+                });
+
+            });
+
+            describe("#serialize", () => {
+
+                it("should use the custom serializer if set");
+                it("should use the generic JSON serializer if no custom is set");
+                it("should throw an error if the custom serializer is set but a deserializer isn't");
+
+            });
+
+            describe("#deserialize", () => {
+
+                it("should use the custom deserializer if set");
+                it("should use the generic JSON deserializer if no custom is set");
+                it("should throw an error if the custom deserializer is set but a serializer isn't");
+
+            });
+
+        });
+
         describe("Validation" , () => {
 
             describe("#valid()" , () => {

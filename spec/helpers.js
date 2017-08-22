@@ -3,6 +3,7 @@
 
     let fs = require("fs");
     let path = require("path");
+    let mkdirp = require("mkdirp");
 
     const ENCODING = "utf8";
 
@@ -90,6 +91,20 @@
          */
         static MOCK() {
             return path.join(Helpers.SPEC(), "mocks");
+        }
+
+        /**
+         * A Path helper to a temp "scratch" folder (absolute path)
+         *
+         * @returns {string} The path to the scratch folder
+         *
+         * @author Martin Haynes <oss@dotmh.com>
+         */
+        static TMP() {
+            let tmpSpace = `${Date.now()}-${Helpers.randomInt(0, 1000)}-${Helpers.randomInt(0, 1000)}`;
+            let tmppath = path.join(Helpers.SPEC(), ".tmp", tmpSpace);
+            mkdirp.sync(tmppath);
+            return tmppath;
         }
     }
 
