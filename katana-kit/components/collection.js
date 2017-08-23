@@ -90,6 +90,7 @@
             if (data && typeof(data) === "object") {
                 this._data = _.extend(this._data , data);
                 this.scan();
+                this.trigger("bulkUpdate", [data]);
             }
 
             return this._data;

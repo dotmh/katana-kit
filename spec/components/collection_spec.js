@@ -93,6 +93,25 @@
 
             });
 
+            it("should trigger a bulkUpdate event" , (done) => {
+
+                let payload = {
+                    "foo" : "bar",
+                    "a"   : "b",
+                    "c"   : "c"
+                };
+
+                let subject = new Collection();
+
+                subject.on("bulkUpdate", (d) => {
+                    expect(d).to.deep.equal(payload);
+                    done();
+                });
+
+                subject.data(payload);
+
+            });
+
         });
 
         describe("#toObject()" , () => {
@@ -413,6 +432,8 @@
                 expect(subject[field]).to.equal(value);
             });
 
+
+            it("Should trigger a set event");
         });
 
         describe("Private Methods throw Errors" , () => {
@@ -426,7 +447,7 @@
                expect(fn).to.throw("Key is required");
             });
 
-            it("should throw an error calling __set" , () => {
+            it("should throw an error calling _set" , () => {
                 let fn = () => {
                     let subject = new Collection();
                     subject._set();
