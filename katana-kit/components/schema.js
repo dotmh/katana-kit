@@ -1,19 +1,3 @@
-/***
- * Copyright (c) 2016 DotMH
- *
- * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated
- * documentation files (the "Software"), to deal in the Software without restriction, including without limitation the
- * rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit
- * persons to whom the Software is furnished to do so, subject to the following conditions:
- *
- * The above copyright notice and this permission notice shall be included in all copies or substantial portions of the
- * Software.
- *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE
- * WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR
- * COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
- * OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
- */
 (function(){
     "use strict";
 
@@ -23,18 +7,96 @@
     const Eventify = require("./eventify");
     const Logger = require('./logger');
 
+    // Which coding system to use for the RAW Json file
     const ENCODING = "utf8";
+
+    // The event fired when the Schema is invalid. 
     const EVENT_INVALID = "schema.invalid";
 
-    /**
-     * Validates objects against a JSON Schema
-     *
-     * @class Schema
-     * @module katana-kit
-     *
-     * @author Martin Haynes <oss@dotmh.com>
-     */
+    // Schema
+    // ======
+    // Schema's allow you to test objects match a certain schama, written in JSON. With Schema it makes it easy to 
+    // verify the object is valid. 
+    //
+    // Schema Files
+    // ============
+    //
+    // A schama file is a simple JSON file that contains an object schema. It is used by the schema class to validate objects against. 
+    // It must contain only a single top level schema object, though it can contain as many nested schema objects as required. 
+    //
+    // Schema Definition Object
+    // ------------------------
+    // The schema definition object (SDO) is used to define the properties of the schema. It is a Javascript Object litteral with the following keys 
+    //
+    // ### Type
+    // Type defines the Javascript type that the key's value should represent as a string. i.e. `boolean` type would be `"boolean"`. 
+    // Sometimes you may want to allow anytype that is represented with a `"*"`. 
+    //
+    // _Example_
+    // ```
+    //     {
+    //         "type" : "string"
+    //     }
+    // ```
+    //
+    // The following types are valid 
+    // - Boolean.
+    // - Null.
+    // - Undefined.
+    // - Number.
+    // - String.
+    // - Object.
+    // - Array.
+    //
+    // ### Required 
+    // Whether or not the field is required, it should contain a `boolean`, `true` or `false`. 
+    //
+    // _Example_
+    // ```
+    //     {
+    //         "required" : true
+    //     }
+    // ```
+    //
+    // Keys
+    // ----
+    // A Schema should contain the same keys as the object been tested. i.e if the object you wish to test was 
+    // ```
+    //     {
+    //         "foo" : "hello world",
+    //         "bar" : 1
+    //     }
+    // ```
+    //
+    // Then you would need to have the keys `foo` and `bar` in your schema object. 
+    //
+    // Value
+    // -----
+    // A Schema key should contain a value of a SDO, or when it's value in the object been tested is a nested object, then it should contain an object litteral. This object littearl should have the same keys as the nested object been tested, and again it should contain a value of ether a SDO or another nested object. 
+    //
+    // Example
+    // -------
+    // ```
+    //     {
+    //     "name" : {"type" : "string" , "required" : true },
+    //     "a" : {"type" : "boolean" , "required" : false},
+    //     "b" : {"type" : "number" },
+    //     "d" : {"required" : true},
+    //     "e" : {
+    //         "aa" : {"type" : "*" }
+    //     }
+    //     }
+    // ```
+    //
     class Schema extends Eventify {
+        // Schema
+        // ------
+        // Creates a new instance of the schema for an object objects can be tested against. 
+        //
+        // ### Example 
+        // ```
+        //     let schema = new Schema("path/to/schema.json");
+        // ```
         constructor(schemaLocation) {
             if ( !(schemaLocation || false) ) {
                 throw new Error("A Json Schema is required");
@@ -52,15 +114,17 @@
 
         }
 
-        /**
-         * Returns whether the object is valid against the Schema
-         *
-         * @param object {Object} the object to test the validity off
-         *
-         * @returns {Boolean} True is valid , false its not
-         *
-         * @author Martin Haynes <oss@dotmh.com>
-         */
+        // Valid
+        // -----
+        // Checks whether the object passed to `object` is valid.
+        // returns `true` for valid , and `false` for not valid. 
+        //
+        // ### Example 
+        // ```
+        //     schema.valid(
+        //         {"somekey" : "somevalue}
+        //     );
+        // ```
         valid(object) {
 
             this.loadSchema();
@@ -381,3 +445,19 @@
     module.exports = Schema;
 
 })();
+/***
+// Copyright (c) 2016 DotMH
+//
+// Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated
+// documentation files (the "Software"), to deal in the Software without restriction, including without limitation the
+// rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit
+// persons to whom the Software is furnished to do so, subject to the following conditions:
+//
+// The above copyright notice and this permission notice shall be included in all copies or substantial portions of the
+// Software.
+//
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE
+// WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR
+// COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
+// OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+*/
