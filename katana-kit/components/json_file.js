@@ -172,6 +172,8 @@
             return FileExt.file_exists(this.filename());
         }
 
+        // __Private API beyond this point!__
+
         /**
          * Checks to see if the JSON file specified exists , if not throws and exception this is used to guard
          * JsonFile::load and JsonFile::loadSync

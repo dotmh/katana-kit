@@ -267,6 +267,8 @@
             }
         }
 
+        // __Private API beyond this point!__
+
         /**
          * Scans the data and registers any fields against the collection
          *

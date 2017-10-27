@@ -209,6 +209,8 @@
             };
         }
 
+        // __Private API beyond this point!__
+
         /**
          * Binds a Trigger to an event in a single queue
          *

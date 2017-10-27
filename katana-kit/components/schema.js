@@ -121,9 +121,9 @@
         //
         // ### Example 
         // ```
-        //     schema.valid(
-        //         {"somekey" : "somevalue}
-        //     );
+        //  if(schema.valid({...})) {
+        //      ... Do Something    
+        //  }
         // ```
         valid(object) {
 
@@ -139,21 +139,22 @@
             return validate.valid;
         }
 
-        /**
-         * Returns whether the object is invalid against the Schema
-         *
-         * @see valid
-         *
-         * @param object {Object} the object to test the validity off
-         * @param showFailureReport {Boolean} Why validation has failed
-         *
-         * @returns {boolean} True is __NOT__ valid , false it __IS__ valid
-         *
-         * @author Martin Haynes <oss@dotmh.com>
-         */
-        invalid(object, showFailureReport) {
-            return !this.valid(object, showFailureReport);
+        // Invalid
+        // -------
+        // Similar to _Valid_ this returns `true` for a invalid object passed as `object`
+        // and `false` for a valid object. 
+        //
+        // ### Example
+        // ```
+        //  if(schema.invalid({...})) {
+        //      ... Do Something    
+        //  }
+        // ```
+        invalid(object) {
+            return !this.valid(object);
         }
+
+        // __Private API beyond this point!__
 
         /**
          * Loads a Schema Json file into the class
@@ -257,7 +258,6 @@
          */
         _validate(report) {
 
-            //let {found , foundTypes} = report;
             let found = report.found;
             let foundTypes = report.foundTypes;
 
