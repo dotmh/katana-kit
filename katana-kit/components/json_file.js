@@ -1,8 +1,25 @@
+/***
+ * Copyright (c) 2016 DotMH
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated
+ * documentation files (the "Software"), to deal in the Software without restriction, including without limitation the
+ * rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit
+ * persons to whom the Software is furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all copies or substantial portions of the
+ * Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE
+ * WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR
+ * COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
+ * OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+ */
 (function(){
     "use strict";
 
     let fs = require("fs");
     let readFileWithPromise = require('bluebird').promisify(fs.readFile);
+    let writeFileWithPromise = require('bluebird').promisify(fs.writeFile);
 
     let Logger = require(`./logger`);
     let FileExt = require("./file_ext");
@@ -11,25 +28,17 @@
 
     const ENCODING = "utf8";
 
-    // JsonFile
-    // ========
-    // is a wrapper for JSON files, it allows you to open a JSON file, and validate it against a [schema](schema.html)
-    // the contents is then wrapped in a [collection](collection.html) giving you all the collection functionality like
-    // been able to observe the file contents. You can add handlers for the events used in [schema](schema.html) by
-    // simply binding them to the `JsonFile` class as they are [bonded](eventify.html#section-23) together
-    //
-    // # Usage
-    // -------
-    // ```
-    // let file = new JsonFile("path/to/file");
-    //
-    // // OR
-    //
-    // let file = new JsonFile(
-    //      "path/to/file",
-    //      "path/to/schema.json"
-    // );
-    // ```
+    /**
+     * Loads JSON files and turns them into a collection
+     *
+     * @class JsonFile
+     * @module katana-kit
+     *
+     * @param filename = Null {String|Null} The JSON file to open
+     * @param schema = Null {String|Null} The JSON schema file to use for validation
+     *
+     * @author Martin Haynes
+     */
     class JsonFile extends Collection {
 
         constructor(filename, schemaFile) {
@@ -38,23 +47,24 @@
             this._schemaFile = schemaFile || null;
             this._schema = this._schemaFile !== null ? new Schema(this._schemaFile) : null;
             this._loaded = false;
+            this._serializer = {
+                serialize : null,
+                deserialize: null
+            };
 
             if(this._schema !== null) {
                 this.bond(this._schema);
             }
         }
 
-        // filename
-        // --------
-        // Ether gets or sets then gets the filename of the JSON file that you wish the class to manage.
-        //
-        // ### Usage
-        // ```
-        // jsonfile.filename(); //=> "path/to/file"
-        // jsonfile.filename(
-        //  "new/path/to/file"
-        // ); //=> "new/path/to/file"
-        // ```
+        /**
+         * Gets , or Sets and Gets the JSON Filename
+         *
+         * @param filename = false {String|Boolean} The Json file name
+         * @returns {String|null} The filename
+         *
+         * @author Martin Haynes
+         */
         filename (filename) {
             if ( filename||false ) {
                 this._filename = filename;
@@ -63,24 +73,19 @@
             return this._filename;
         }
 
-        // load
-        // ----
-        // Loads a JSON file and wraps it in a [collection](collection.html). This method follows the standard
-        // node idiology of doing such operations async. It therefore returns a promise that will resolve with the
-        // instance of this Class loaded with the contents of the JSON file.
-        //
-        // ### Usage
-        // ```
-        // jsonfile.load().then((jsonfile) => {
-        // // ... Do Something
-        // });
-        // ```
+        /**
+         * Loads a JSON file up Async and populates the collection with the data
+         *
+         * @returns {Promise} The Promise for when the file is loaded.
+         *
+         * @author Martin Haynes
+         */
         load() {
 			Logger.info(`json_file / load - ${this.filename()}`);
             this.exists_or_die();
                 return readFileWithPromise(this.filename(), ENCODING)
                 .then((data) => {
-                    let json = JSON.parse(data);
+                    let json = this.deserialize(data);
                     Logger.info(`json_file / loaded - ${JSON.stringify(json)}`);
                     this.data(json);
                     this._loaded = true;
@@ -93,23 +98,20 @@
 
         }
 
-        // loadSync
-        // --------
-        // Similar to other node js modules, including those built in this is a sync version of [JsonFile.load](#section-9). As doing sync
-        // operations kinda defeats the purpose of using node this is not the default way of loading. Its provided
-        // if you need it. It will load the JsonFile and then return an instance of the class loaded with the data.
-        //
-        // ### Usage
-        // ```
-        // let a = jsonfile.loadSync();
-        // ```
+        /**
+         * Loads a JSON file up Sync and populates the Collection
+         *
+         * @returns {JsonFile} This instance of JsonFile with the data prepopulated
+         *
+         * @author Martin Haynes
+         */
         loadSync() {
 			Logger.info(`json_file / loadSync - ${this.filename()}`);			
             this.exists_or_die();
             let data = fs.readFileSync(this.filename() , ENCODING);
             let json = null;
             try {
-                json = JSON.parse(data);
+                json = this.deserialize(data);
                 this.data(json);
                 this._loaded = true;
             } catch (error) {
@@ -119,16 +121,75 @@
             return this;
         }
 
-        // valid
-        // -----
-        // Checks the data from the JSON against a [Schema](schema.html).
-        // If the JSON hasn't been loaded yet, then it will load the file using [JsonFile.loadSync](#section-12),
-        // it will return boolean `true` if it is valid and `false` if it is not.
-        //
-        // ### Usage
-        // ```
-        // jsonfile.valid() // => true or false
-        // ```
+        save() {
+            Logger.info(`json_file / save - ${this.filename()}`);
+            return writeFileWithPromise(this.filename(), this.serialize(), ENCODING);
+
+        }
+
+        saveSync() {
+            Logger.info(`json_file / saveSync - ${this.filename()}`);
+            fs.writeFileSync(this.filename(), this.serialize(), ENCODING);
+        }
+
+        registerSerializer(serializer) {
+            this._function_or_die(serializer, "serializer");
+            this._serializer.serialize = serializer;
+        }
+
+        registerDeserializer(deserializer) {
+            this._function_or_die(deserializer, "deserializer");
+            this._serializer.deserialize = deserializer;
+        }
+
+        serialize() {
+            if(this.canSerialize()) {
+                if(this.canCustomSerialize()) {
+                    return this._serializer.serialize(this.data());
+                } else {
+                    return JSON.stringify(this.data());
+                }
+            } else {
+                throw new Error("Can not serialize data missing ether serializer or deserializer");
+            }
+        }
+
+        deserialize(serialized) {
+            if(this.canSerialize()) {
+                if(this.canCustomSerialize()) {
+                    return this._serializer.deserialize(serialized);
+                } else {
+                    return JSON.parse(serialized);
+                }
+            } else {
+                throw new Error("Can not serialize data missing ether serializer or deserializer");
+            }
+        }
+
+        canSerialize() {
+            if(this._serializer.serialize === null && this._serializer.deserialize === null) {
+                return true;
+            }
+
+            return this.canCustomSerialize();
+        }
+
+        canCustomSerialize() {
+            return this._serializer.serialize !== null && this._serializer.deserialize !== null;
+        }
+
+        toString() {
+            return this.serialize();
+        }
+
+
+        /**
+         * Checks that the data from the JSON file matches the schema
+         *
+         * @returns {Boolean} Standard True = valid , False = invalid
+         *
+         * @author Martin Haynes
+         */
         valid() {
             this._hasSchema();
             if ( !this._loaded ) {
@@ -137,16 +198,13 @@
             return this._schema.valid(this.data());
         }
 
-        // invalid
-        // -------
-        // The convince method which is the opposite of [jsonfile.valid()](#section-15).
-        // It therefore returns boolean [true] if the JSON is not valid against the schema , and false if it is valid
-        // it is the same as doing `!jsonfile.valid()`.
-        //
-        // ### Usage
-        // ```
-        // jsonfile.invalid() // => true or false
-        // ```
+        /**
+         * checks that the data
+         *
+         * @returns {boolean} inverse standard True = invalid , False = valid
+         *
+         * @author Martin Haynes
+         */
         invalid() {
             return !this.valid(this.data());
         }
@@ -158,21 +216,9 @@
          *
          * @author Martin Haynes
          */
-
-        // exists
-        // ------
-        // Allows you to check if the file exists before attempting to load it. will return boolean `true` if the file
-        // exists and `false` if not.
-        //
-        // ### Usage
-        // ```
-        // jsonfile.exists() // => true or false
-        // ```
         exists() {
             return FileExt.file_exists(this.filename());
         }
-
-        // __Private API beyond this point!__
 
         /**
          * Checks to see if the JSON file specified exists , if not throws and exception this is used to guard
@@ -210,22 +256,14 @@
             }
         }
 
+        _function_or_die(check, param) {
+            if(typeof(check) !== "function") {
+                throw new Error(`${param} must be a function!`);
+            }
+        }
+
     }
 
     module.exports = JsonFile;
 
 })();
-// Copyright (c) 2016 DotMH
-//
-// Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated
-// documentation files (the "Software"), to deal in the Software without restriction, including without limitation the
-// rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit
-// persons to whom the Software is furnished to do so, subject to the following conditions:
-//
-// The above copyright notice and this permission notice shall be included in all copies or substantial portions of the
-// Software.
-//
-// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE
-// WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR
-// COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
-// OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.

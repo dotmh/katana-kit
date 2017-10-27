@@ -1,3 +1,19 @@
+/***
+ * Copyright (c) 2016 DotMH
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated
+ * documentation files (the "Software"), to deal in the Software without restriction, including without limitation the
+ * rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit
+ * persons to whom the Software is furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all copies or substantial portions of the
+ * Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE
+ * WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR
+ * COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
+ * OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+ */
 (function(){
     "use strict";
 
@@ -5,84 +21,16 @@
     let Eventify = require("./eventify");
 
     const PATH_SEPERATOR = ".";
-    
-    // Collection
-    // ==========
-    // Collections are clever objects, they store data that your app needs much like an object literal. The difference is
-    // that a collection can be observed. This is done by binding an event to the collection.
-    //
-    // A collection uses [field](#section-14) to register new fields. Due to the way ES5 works, this is essential to allow it to
-    // be observed.
-    //
-    // All examples assume that the class has been created using
-    // ```
-    // let collection = new Collection({foo: "bar"});
-    // ```
-    //
-    // Events
-    // ------
-    // The main purpose of the collection is to allow data contained within it to be observed.
-    // for this you need to use Events (as collection extends [Eventify](eventify.html) ).
-    // There are 6 events created by default you can observe
-    //
-    // ### Register
-    // `register`
-    // is triggered whenever any field is registered on the collection
-    // the event object will contain the key of the field been registered.
-    //
-    // ```
-    // collection.on("register" , (field) => console.log(field));
-    // collection.field("samurai"); // $: samurai
-    // ```
-    //
-    // ### Register.{KEY}
-    // `register.{KEY}`
-    // is triggered whenever the specified field is registered on the collection
-    //
-    // ```
-    // collection.on("register.samurai" , () => console.log('Japanese warriors'));
-    // collection.field("samurai"); // $: Japanese warriors
-    // ```
-    //
-    // ### Get
-    // `get`
-    // is triggered whenever any field is retrieved (got) on the collection
-    // the event object will contain the key of the field been retrieved.
-    //
-    // ```
-    // collection.on("get" , (field) => console.log(field));
-    // collection.samurai; // $: samurai
-    // ```
-    //
-    // ### Get.{KEY}
-    // `get.{KEY}`
-    // is triggered whenever the field specified by {KEY} is retrieved (got) on the collection
-    //
-    // ```
-    // collection.on("get.samurai" , () => console.log('Japanese warriors'));
-    // collection.samurai; // $: Japanese warriors
-    // ```
-    //
-    // ### Set
-    // `set`
-    // is triggered whenever any field is set on the collection
-    // the event object will contain the key of the field been set and the value its set to.
-    //
-    // ```
-    // collection.on("set" , (field, value) => console.log(`${field} is now ${value}`));
-    // collection.samurai = "Japanese Warriors"; // $: samurai is now Japanese Warriors
-    // ```
-    //
-    // ### Set.{KEY}
-    // `set.{KEY}`
-    // is triggered whenever the field specified by {KEY} is set on the collection
-    // the event object will contain the value the key was set too
-    //
-    // ```
-    // collection.on("set.samurai" , (value) => console.log(value));
-    // collection.samurai = "Japanese Warriors"; // $: Japanese warriors
-    // ```
 
+    /**
+     * A basic collection object
+     *
+     * @class Collection
+     * @module katana-kit
+     * @extends Eventify
+     *
+     * @author Martin Haynes <oss@dotmh.com>
+     */
     class Collection extends Eventify {
         constructor(data) {
             super();
@@ -95,55 +43,48 @@
             }
         }
 
-        // isCollection
-        // ------------
-        // Identifies the class as a collection, this is used by other bits of code to check that a class is a collection
-        // or it extends collection
-        //
-        // ### Usage
-        // ```
-        // collection.isCollection // => true
-        // ```
+        /**
+         * Identifies the object as been a collection
+         *
+         * @returns {boolean} True if it is a collection
+         *
+         * @author Martin Haynes <oss@dotmh.com>
+         */
         isCollection() {
             return true;
         }
 
-        // toObject
-        // --------
-        // Outputs the collection data as an object literal, alias of calling `collection.data()`
-        //
-        // ### Usage
-        // ```
-        // collection.toObject(); // => {foo: bar}
-        // ```
+        /**
+         * Out puts the collection internal data as a Object literal (unboxing)
+         *
+         * @returns {Object} an Object literal containing the internal class data
+         *
+         * @author Martin Haynes <oss@dotmh.com>
+         */
         toObject() {
             return this.data();
         }
 
-        // toString
-        // --------
-        // Coverts the collection data to a string, using JSON encoding.
-        //
-        // ### Usage
-        // ```
-        // collection.toString() // => '{"foo" : "bar"}'
-        // ```
+        /**
+         * Converts the internal data into a JSON encoded string
+         *
+         * @returns {String} The data as a string
+         *
+         * @author Martin Haynes <oss@dotmh.com>
+         */
         toString() {
             return JSON.stringify(this.data());
         }
 
-        // data
-        // ----
-        // Returns all the data been stored in the collection as an object literal. The collection uses an object
-        // internally to store the data so this simple returns that. When a parameter is passed function is also used
-        // to add data to a collection. The data been added __MUST__ be an object. This allows the collection's data to
-        // be added to or extended at a later time.
-        //
-        // ### Usage
-        // ```
-        // collection.data({foo: 'bar'}); // => {foo: bar}
-        // collection.data(); // => {foo.bar}
-        // ```
+        /**
+         * Adds and returns or returns the internal data object allow you to bulk updata the collection after it has
+         * been constructed
+         *
+         * @param data = false {Object|Boolean} The data to bulk load in
+         * @returns {Object} The internal data object
+         *
+         * @author Martin Haynes <oss@dotmh.com>
+         */
         data(data) {
             data = data || false;
             if (data && typeof(data) === "object") {
@@ -154,16 +95,14 @@
             return this._data;
         }
 
-        // has
-        // ---
-        // Checks to see if the collection has a field registered against it.
-        // It will return `false` if it can't be found and `true` if it can.
-        //
-        // ### Usage
-        //
-        // ```
-        // <CLASS>.has("foo");
-        // ```
+        /**
+         * Checks to see if the collection has a field
+         *
+         * @param key {String} The field to check
+         * @returns {boolean} False the field doesn't exist , True it does
+         *
+         * @author Martin Haynes <oss@dotmh.com>
+         */
         has(key) {
             if (!(key || false)) {
                 throw new Error("Key is required");
@@ -171,25 +110,14 @@
             return this._fields.lastIndexOf(key) > -1;
         }
 
-        // field
-        // -----
-        //
-        // Initialize a field within the collection this has to happen to benefit from the additional collection methods
-        // Simply using `[collection].a = "b"` wont work.
-        //
-        // ### Usage
-        //
-        // ```
-        // <CLASS>.field("foo");
-        // ```
-        //
-        // then you can do
-        //
-        // ```
-        // <CLASS>.foo = "bar";
-        // <CLASS>.foo; // => "bar"
-        // ```
-        // as you normally would.
+        /**
+         * Initialize a field within the collection this has to happen to benefit from the additional collection methods
+         * Simply using [collection].a = "b" wont work.
+         *
+         * @param name {String} the field name to be added
+         *
+         * @author Martin Haynes <oss@dotmh.com>
+         */
         field(name) {
             if (!(name || false)) {
                 throw new Error("Fieldname is required");
@@ -197,45 +125,36 @@
             this.add(name);
         }
 
-        // fields
-        // ------
-        //
-        // Returns an Array of all the fields that are active on a collection at the time it is called.
-        // This will only return fields that have been registered with [field](#section-14)
-        //
-        // ### Usage
-        //
-        // ```
-        // <CLASS>.fields();
-        // ```
+        /**
+         * Returns a list of all the fields that are active on the collection at current
+         *
+         * @returns {Array} A list of all the field names that have been registered on the collection
+         *
+         * @author Martin Haynes <oss@dotmh.com>
+         */
         fields() {
             return this._fields;
         }
 
-        // length
-        // ------
-        // Returns the size of the collection, i.e. how many fields have been registered, similar to Javascripts
-        // Array.length method.
-        //
-        // ### Usage
-        // ```
-        // <CLASS>.length
-        // ```
+        /**
+         * Returns the number of fields that are currently on the collection
+         *
+         * @returns {number} The number of fields on the collection
+         *
+         * @author Martin Haynes <oss@dotmh.com>
+         */
         length() {
             return this._length;
         }
 
-        // find
-        // ----
-        // Find allows you to get at the internal data of the collection using a string query, it checks at every
-        // stage whether the key exists of not, thus making it safe to run at any point.
-        // if the query finds a value then that value will be returned, if not `false` will be returned
-        //
-        // ### Usage
-        // ```
-        // collection.find("foo"); // => "bar"
-        // collection.find("a.b.c"); // => false
-        // ```
+        /**
+         * Find data based on a query path i.e. a.b.c => c
+         *
+         * @param query = false {String|Boolean} the path that you wish to retrieve
+         * @returns {*} The value of variable located at the path or FALSE
+         *
+         * @author Martin Haynes <oss@dotmh.com>
+         */
         find(query) {
             if ( !(query ||  false)) {
                 return null;
@@ -249,14 +168,14 @@
             return base;
         }
 
-        // extend
-        // ------
-        // Allows one collection to be extended with another. Unlike `collection.data` both sides must be a collection
-        //
-        // ### Usage
-        // ```
-        // collection.extend(new Collection({"ninja" : "sword"}); // => {foo: "bar", ninja: "Sword"}
-        // ```
+        /**
+         * Allows you to extend one collection with another.
+         *
+         * @param collection {Collection} The collection you wish to extend this collection with.
+         * @returns {Collection} the collection after it has been extended
+         *
+         * @author Martin Haynes <oss@dotmh.com>
+         */
         extend(collection) {
             if ( typeof(collection.isCollection) === "function" && collection.isCollection() ) {
                 let fData = collection.data();
@@ -266,8 +185,6 @@
                 throw new Error("Collections can only be extended with other collections");
             }
         }
-
-        // __Private API beyond this point!__
 
         /**
          * Scans the data and registers any fields against the collection
@@ -393,17 +310,3 @@
     module.exports = Collection;
 
 })();
-// Copyright (c) 2016 DotMH
-//
-// Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated
-// documentation files (the "Software"), to deal in the Software without restriction, including without limitation the
-// rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit
-// persons to whom the Software is furnished to do so, subject to the following conditions:
-//
-// The above copyright notice and this permission notice shall be included in all copies or substantial portions of the
-// Software.
-//
-// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE
-// WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR
-// COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
-// OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
