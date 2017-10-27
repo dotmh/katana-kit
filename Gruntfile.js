@@ -4,7 +4,7 @@ module.exports = function (grunt) {
 
     grunt.initConfig({
         pkg: grunt.file.readJSON("package.json"),
-        src: "node_ninja",
+        src: "katana-kit",
         spec: "spec",
 
         notify_hooks: {
@@ -79,9 +79,12 @@ module.exports = function (grunt) {
             }
         },
 
-        rm: {
-            testTmp : {
-                dir: '<%= spec %>/.tmp'
+        docco: {
+            dist: {
+                src: ['katana-kit/**/*.js'],
+                options: {
+                    output: 'docs/'
+                }
             }
         },
 
@@ -106,14 +109,14 @@ module.exports = function (grunt) {
     grunt.loadNpmTasks('grunt-mocha-test');
     grunt.loadNpmTasks('grunt-mocha-istanbul');
     grunt.loadNpmTasks('grunt-coveralls');
-    grunt.loadNpmTasks('grunt-rm');
+    grunt.loadNpmTasks('grunt-docco');
 
     grunt.task.run('notify_hooks');
 
     grunt.registerTask('validate' , ['jshint:all', 'mocha_istanbul:coverage', 'rm:testTmp']);
     grunt.registerTask('ci', ['jshint:all', 'mocha_istanbul:ci', 'coveralls']);
     grunt.registerTask('test' , ['validate']);
-    grunt.registerTask('build' , ['validate' , 'notify:build']);
-    grunt.registerTask('autobuild' , ['default' , 'build']);
+    grunt.registerTask('build' , ['validate' , 'docco:dist', 'notify:build']);
+    grunt.registerTask('autobuild' , ['default' , 'watch']);
     grunt.registerTask('default' , ['build']);
 };
