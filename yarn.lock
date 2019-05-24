@@ -94,9 +94,10 @@ bl@~1.1.2:
   dependencies:
     readable-stream "~2.0.5"
 
-bluebird@^3.4.6:
-  version "3.4.6"
-  resolved "https://registry.yarnpkg.com/bluebird/-/bluebird-3.4.6.tgz#01da8d821d87813d158967e743d5fe6c62cf8c0f"
+bluebird@^3.5.5:
+  version "3.5.5"
+  resolved "https://registry.yarnpkg.com/bluebird/-/bluebird-3.5.5.tgz#a8d0afd73251effbbd5fe384a77d73003c17a71f"
+  integrity sha512-5am6HnnfN+urzt4yfg7IgTbotDjIT/u8AJpEt0sIU9FtXfVeezXAPKswrG+xKUCOYAINpSdgZVDU6QFh+cuH3w==
 
 body-parser@~1.14.0:
   version "1.14.2"
