@@ -1,6 +1,9 @@
 KATANA KIT
 ==========
 
+**NO LONGER SUPPORTED, DO NOT USE!**
+This package is no longer support, and will not receive any futher updates including security releated updates. The functions that this package provided are now mostly supported nativly or better by more speciallised libraries. 
+
 [![Greenkeeper badge](https://badges.greenkeeper.io/dotmh/katana-kit.svg)](https://greenkeeper.io/)
 [![CircleCI](https://circleci.com/gh/dotmh/katana-kit.svg?style=svg)](https://circleci.com/gh/dotmh/katana-kit)
 [![Coverage Status](https://coveralls.io/repos/github/dotmh/katana-kit/badge.svg?branch=master)](https://coveralls.io/github/dotmh/katana-kit?branch=master)
