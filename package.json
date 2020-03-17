@@ -20,7 +20,7 @@
   "homepage": "https://github.com/dotmh/katana-kit/blob/master/README.md",
   "devDependencies": {
     "chai": "^4.0.2",
-    "grunt": "^1.0.1",
+    "grunt": "^1.1.0",
     "grunt-contrib-jshint": "^1.0.0",
     "grunt-contrib-watch": "^1.0.0",
     "grunt-coveralls": "^1.0.1",
